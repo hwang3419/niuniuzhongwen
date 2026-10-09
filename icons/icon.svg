@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <defs>
+    <linearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FF7675" />
+      <stop offset="100%" stop-color="#E84118" />
+    </linearGradient>
+    <filter id="shadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="12" stdDeviation="16" flood-color="rgba(232, 65, 24, 0.35)" />
+    </filter>
+  </defs>
+  <!-- 背景圆角卡片 -->
+  <rect x="24" y="24" width="464" height="464" rx="108" fill="url(#grad)" filter="url(#shadow)" />
+  
+  <!-- 内嵌米字格小卡片 -->
+  <rect x="76" y="76" width="360" height="360" rx="40" fill="#FFFDF9" stroke="#FFEAA7" stroke-width="8" />
+  
+  <!-- 米字格虚线 -->
+  <line x1="256" y1="76" x2="256" y2="436" stroke="#FFA07A" stroke-width="4" stroke-dasharray="8 8" opacity="0.6" />
+  <line x1="76" y1="256" x2="436" y2="256" stroke="#FFA07A" stroke-width="4" stroke-dasharray="8 8" opacity="0.6" />
+  <line x1="76" y1="76" x2="436" y2="436" stroke="#FFA07A" stroke-width="3" stroke-dasharray="8 8" opacity="0.4" />
+  <line x1="76" y1="436" x2="436" y2="76" stroke="#FFA07A" stroke-width="3" stroke-dasharray="8 8" opacity="0.4" />
+  
+  <!-- 核心汉字“学”或“字”楷体风格 -->
+  <text x="256" y="325" font-family="'KaiTi', 'STKaiti', 'PingFang SC', sans-serif" font-size="230" font-weight="bold" fill="#2D3436" text-anchor="middle">字</text>
+  
+  <!-- 顶部拼音 -->
+  <text x="256" y="148" font-family="'PingFang SC', sans-serif" font-size="44" font-weight="bold" fill="#E84118" text-anchor="middle">zì</text>
+  
+  <!-- 装饰小星星 -->
+  <circle cx="120" cy="120" r="16" fill="#F1C40F" />
+  <polygon points="400,105 404,118 418,118 406,126 411,138 400,130 389,138 394,126 382,118 396,118" fill="#F1C40F" />
+</svg>

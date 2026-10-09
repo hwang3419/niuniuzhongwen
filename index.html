@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <meta name="theme-color" content="#FF7675">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="马立平识字卡">
+  <title>马立平中文卡片识字 - 快乐启蒙</title>
+  
+  <link rel="icon" type="image/svg+xml" href="icons/icon.svg">
+  <link rel="manifest" href="manifest.json">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/print.css" media="print">
+</head>
+<body>
+
+<div class="app-container">
+  <!-- 顶部标题与快捷操作 -->
+  <header class="app-topbar">
+    <div class="brand-wrap">
+      <span class="brand-icon">🏮</span>
+      <h1 class="brand-title">马立平识字卡</h1>
+    </div>
+    <div class="topbar-actions">
+      <button class="icon-btn" id="openAddCardBtn" title="添加自定义生字">➕</button>
+      <button class="icon-btn" id="btnPrintCards" title="打印本课字卡 (A4)">🖨️</button>
+      <button class="icon-btn" id="openSettingsBtn" title="设置与偏好">⚙️</button>
+    </div>
+  </header>
+
+  <!-- 统计横幅与积分奖励 -->
+  <section class="stats-banner">
+    <div class="stat-item">
+      <span>已掌握:</span>
+      <span class="stat-val" id="statMasteredCount">0</span>
+    </div>
+    <div class="stat-item">
+      <span>需复习:</span>
+      <span class="stat-val" id="statReviewCount">0</span>
+    </div>
+    <div class="stat-item">
+      <span>小星星:</span>
+      <span class="stat-val stars" id="statStarPoints">10 ⭐</span>
+    </div>
+  </section>
+
+  <!-- 单元选择与筛选芯片 -->
+  <section class="unit-picker-card">
+    <select id="unitSelect" class="unit-select-styled" aria-label="选择教材单元">
+      <!-- 动态注入单元选项 -->
+    </select>
+    <div class="filter-chips-row">
+      <button class="filter-chip active" data-filter="all">全部生字</button>
+      <button class="filter-chip" data-filter="need_review">🔁 待复习</button>
+      <button class="filter-chip" data-filter="mastered">🌟 已掌握</button>
+      <button class="filter-chip" data-filter="favorite">★ 收藏夹</button>
+    </div>
+  </section>
+
+  <!-- ======================== TAB 1: 🎴 字卡认读 ======================== -->
+  <main id="view-card" class="tab-view active">
+    <div class="flashcard-wrapper" id="flashcardWrapper">
+      <div class="flashcard" id="flashcard">
+        
+        <!-- 卡片正面 -->
+        <div class="card-face card-front">
+          <div class="card-front-header">
+            <span class="card-meta-pill" id="cardFrontRadical">部首: 人</span>
+            <span class="card-status-badge" id="cardStatusBadge">🌟 已掌握</span>
+            <button class="card-fav-btn no-flip" id="favCharBtn" title="加入收藏">☆</button>
+          </div>
+
+          <div class="character-box-wrap">
+            <div class="pinyin-display" id="cardFrontPinyin">rén</div>
+            <div class="tianzige-bg grid-mizige" id="cardFrontTianzige">
+              <span class="char-main" id="cardFrontChar">人</span>
+            </div>
+          </div>
+
+          <div class="card-front-footer">
+            <button class="quick-sound-btn no-flip" id="speakCharBtn">
+              <span>🔊</span> 听发音
+            </button>
+            <span class="tap-hint-text">点击卡片翻看词句 🔄</span>
+            <span class="card-meta-pill" id="cardFrontStrokes">2画</span>
+          </div>
+        </div>
+
+        <!-- 卡片背面 -->
+        <div class="card-face card-back">
+          <div class="card-back-header">
+            <span class="back-char-small" id="cardBackChar">人</span>
+            <div class="back-pinyin-group">
+              <span class="back-pinyin" id="cardBackPinyin">rén</span>
+              <span class="back-english" id="cardBackEnglish">person / human</span>
+            </div>
+            <button class="quick-sound-btn no-flip" onclick="event.stopPropagation(); window.soundEngine.speakCard(window.app.getCurrentCharacter());">
+              <span>🔊</span> 完整朗读
+            </button>
+          </div>
+
+          <!-- 词组 -->
+          <div class="back-section">
+            <div class="section-label">📚 常用词组 (点击可听)</div>
+            <div class="words-pill-wrap" id="cardBackWords">
+              <!-- 动态注入词组 -->
+            </div>
+          </div>
+
+          <!-- 例句 -->
+          <div class="back-section">
+            <div class="section-label">📖 课文与生活例句</div>
+            <div class="sentence-card">
+              <span id="cardBackSentence">我们是一家人，相亲又相爱。</span>
+              <button class="sentence-sound-icon no-flip" id="speakSentenceBtn" title="朗读句子">🔊</button>
+            </div>
+          </div>
+
+          <!-- 记忆口诀 / 象形字源 -->
+          <div class="back-section">
+            <div class="section-label">💡 象形字源与趣味口诀</div>
+            <div class="mnemonic-box" id="cardBackMnemonic">
+              侧面站立，两腿迈开的就是“人”。
+            </div>
+          </div>
+
+          <!-- 笔顺步骤 -->
+          <div class="back-section">
+            <div class="section-label">✍️ 笔顺分解</div>
+            <div class="stroke-steps-row" id="cardBackStrokeOrder">
+              <!-- 动态步骤 -->
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- 无符合条件字卡时的空状态 -->
+      <div class="empty-card-state" id="cardEmptyState" style="display: none;">
+        <span class="empty-icon">🌱</span>
+        <p>当前分类下没有字卡哦</p>
+        <button class="btn btn-primary btn-round" onclick="document.querySelector('.filter-chip[data-filter=all]').click();">查看全部生字</button>
+      </div>
+    </div>
+
+    <!-- 卡片操作控制条 -->
+    <div class="card-actions-bar">
+      <button class="nav-arrow-btn" id="prevCardBtn" title="上一张" aria-label="上一张">◀</button>
+      <div class="action-status-btns">
+        <button class="status-btn btn-review" id="btnMarkReview">🔁 再练练</button>
+        <button class="status-btn btn-master" id="btnMarkMaster">🌟 认识了</button>
+      </div>
+      <button class="nav-arrow-btn" id="nextCardBtn" title="下一张" aria-label="下一张">▶</button>
+    </div>
+
+    <!-- 辅助工具：自动播放、随机、进度 -->
+    <div class="card-tools-bar">
+      <button class="tool-text-btn" id="autoPlayBtn">▶ 自动巡航</button>
+      <span class="card-counter-badge" id="cardCounter">1 / 16</span>
+      <button class="tool-text-btn" id="shuffleBtn">🔀 打乱顺序</button>
+    </div>
+  </main>
+
+  <!-- ======================== TAB 2: ✍️ 指尖描红 ======================== -->
+  <section id="view-write" class="tab-view">
+    <div class="write-view-wrap">
+      <div class="write-char-banner">
+        <div class="write-target-char">
+          <span class="write-pinyin" id="writeCurrentPinyinLabel">rén</span>
+          <span class="write-char" id="writeCurrentCharLabel">人</span>
+        </div>
+        <button class="quick-sound-btn" id="writeSpeakBtn">🔊 听音</button>
+      </div>
+
+      <!-- 触控画板容器 -->
+      <div class="write-canvas-container">
+        <canvas id="writeCanvas"></canvas>
+      </div>
+
+      <!-- 画板工具条 -->
+      <div class="write-toolbar">
+        <div class="palette-dots">
+          <div class="color-dot active" data-color="#2D3436" style="background:#2D3436;" title="墨黑"></div>
+          <div class="color-dot" data-color="#E84118" style="background:#E84118;" title="朱红"></div>
+          <div class="color-dot" data-color="#0984E3" style="background:#0984E3;" title="海蓝"></div>
+          <div class="color-dot" data-color="#00B894" style="background:#00B894;" title="草绿"></div>
+          <div class="color-dot" data-color="#F1C40F" style="background:#F1C40F;" title="金黄"></div>
+        </div>
+
+        <div class="canvas-actions">
+          <button class="mini-tool-btn" id="eraserBtn">橡皮</button>
+          <button class="mini-tool-btn" id="undoCanvasBtn">撤销</button>
+          <button class="mini-tool-btn" id="clearCanvasBtn">清空</button>
+          <button class="mini-tool-btn active" id="toggleOutlineBtn">描红底模</button>
+        </div>
+      </div>
+
+      <div class="write-nav-row">
+        <button class="btn btn-secondary btn-round" id="writePrevBtn">◀ 练上一个</button>
+        <button class="btn btn-primary btn-round" id="writeNextBtn">练下一个 ▶</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ======================== TAB 3: 🎮 趣味游戏 ======================== -->
+  <section id="view-game" class="tab-view">
+    <div class="game-subnav-row">
+      <button class="game-mode-tab-btn active" data-mode="listen">🎧 听音辨字</button>
+      <button class="game-mode-tab-btn" data-mode="pair">🧩 连连组词</button>
+      <button class="game-mode-tab-btn" data-mode="quiz">⚡ 10题闯关</button>
+    </div>
+
+    <!-- 游戏动态渲染容器 -->
+    <div id="gameDynamicContainer"></div>
+  </section>
+
+  <!-- ======================== TAB 4: 📋 生字字表 ======================== -->
+  <section id="view-list" class="tab-view">
+    <div class="search-bar-wrap">
+      <input type="text" id="charSearchInput" class="search-input" placeholder="🔍 搜索汉字或拼音 (如: 人 或 ren)...">
+    </div>
+
+    <div class="character-list-grid" id="characterListGrid">
+      <!-- 动态注入所有字块 -->
+    </div>
+  </section>
+
+  <!-- 底部固定导航栏 (Mobile Fixed Bottom Bar) -->
+  <nav class="bottom-nav">
+    <div class="bottom-nav-item active" data-tab="card">
+      <span class="nav-icon">🎴</span>
+      <span class="nav-label">字卡认读</span>
+    </div>
+    <div class="bottom-nav-item" data-tab="write">
+      <span class="nav-icon">✍️</span>
+      <span class="nav-label">指尖描红</span>
+    </div>
+    <div class="bottom-nav-item" data-tab="game">
+      <span class="nav-icon">🎮</span>
+      <span class="nav-label">趣味游戏</span>
+    </div>
+    <div class="bottom-nav-item" data-tab="list">
+      <span class="nav-icon">📋</span>
+      <span class="nav-label">生字字表</span>
+    </div>
+  </nav>
+</div>
+
+<!-- ======================== 弹窗：家长与教师设置 ======================== -->
+<div class="modal-backdrop" id="settingsModal">
+  <div class="modal-card">
+    <div class="modal-header">
+      <h3 class="modal-title">⚙️ 家长与教师设置</h3>
+      <button class="modal-close-btn" id="closeSettingsBtn">✕</button>
+    </div>
+    <form id="settingsForm">
+      <div class="form-group">
+        <label class="checkbox-label">
+          <input type="checkbox" id="settingShowPinyin">
+          <span>正面显示拼音 (关闭可练习“直映识字”)</span>
+        </label>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">辅助网格类型</label>
+        <select id="settingGridType" class="form-select">
+          <option value="mizige">米字格 (推荐少儿写字结构)</option>
+          <option value="tianzige">田字格</option>
+          <option value="none">纯净无格</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">自动巡航朗读间隔</label>
+        <select id="settingAutoPlaySpeed" class="form-select">
+          <option value="2.5">较快 (2.5 秒)</option>
+          <option value="3.5">适中 (3.5 秒)</option>
+          <option value="5.0">慢速听读 (5 秒)</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label class="checkbox-label">
+          <input type="checkbox" id="settingEyeCare">
+          <span>柔和纸张护眼色 (柔光暖黄色背景)</span>
+        </label>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-danger" id="btnResetProgress">清空学习记录</button>
+        <button type="submit" class="btn btn-primary" style="flex:1;">保存设置</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- ======================== 弹窗：添加自定义生字 ======================== -->
+<div class="modal-backdrop" id="addCardModal">
+  <div class="modal-card">
+    <div class="modal-header">
+      <h3 class="modal-title">➕ 录入本周新学字卡</h3>
+      <button class="modal-close-btn" id="closeAddCardBtn">✕</button>
+    </div>
+    <form id="addCardForm">
+      <div class="form-group">
+        <label class="form-label">汉字 (必填)</label>
+        <input type="text" id="inputChar" class="form-input" maxlength="2" placeholder="如：猫" required>
+      </div>
+      <div class="form-group">
+        <label class="form-label">拼音 (必填)</label>
+        <input type="text" id="inputPinyin" class="form-input" placeholder="如：māo" required>
+      </div>
+      <div class="form-group">
+        <label class="form-label">常用词组 (以逗号或空格隔开)</label>
+        <input type="text" id="inputWords" class="form-input" placeholder="如：小猫，花猫，猫咪">
+      </div>
+      <div class="form-group">
+        <label class="form-label">课文或生活例句</label>
+        <input type="text" id="inputSentence" class="form-input" placeholder="如：可爱的小花猫在草地上晒太阳。">
+      </div>
+      <div class="form-group">
+        <label class="form-label">英文释义 (可选)</label>
+        <input type="text" id="inputEnglish" class="form-input" placeholder="如：cat">
+      </div>
+      <div class="modal-footer">
+        <button type="submit" class="btn btn-primary btn-block">立即加入我的字库</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- 脚本引入 -->
+<script src="js/data.js"></script>
+<script src="js/audio.js"></script>
+<script src="js/storage.js"></script>
+<script src="js/canvas-writer.js"></script>
+<script src="js/games.js"></script>
+<script src="js/app.js"></script>
+
+</body>
+</html>

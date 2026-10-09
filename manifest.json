@@ -1,0 +1,18 @@
+{
+  "name": "马立平中文卡片识字 - 快乐启蒙",
+  "short_name": "马立平识字卡",
+  "description": "专为儿童与海外华裔孩子设计的马立平教材汉字卡片识字移动应用，支持语音朗读、指尖描红与趣味闯关游戏",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#FFFDF7",
+  "theme_color": "#FF7675",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "./icons/icon.svg",
+      "sizes": "512x512",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

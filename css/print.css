@@ -1,0 +1,71 @@
+/* ==========================================================================
+   马立平字卡 A4 纸打印专属样式 (Print Stylesheet for Flashcards)
+   针对家庭与学校打印优化：黑白/彩墨高对比，自带剪裁虚线
+   ========================================================================== */
+
+@media print {
+  body {
+    background: #FFFFFF !important;
+    color: #000000 !important;
+  }
+
+  /* 隐藏所有界面元素、导航栏、按钮 */
+  .app-topbar,
+  .bottom-nav,
+  .stats-banner,
+  .unit-picker-card,
+  .card-actions-bar,
+  .card-tools-bar,
+  .modal-backdrop,
+  .write-view-wrap,
+  .game-subnav-row,
+  .game-container,
+  .search-bar-wrap {
+    display: none !important;
+  }
+
+  .app-container {
+    max-width: 100% !important;
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+
+  /* 打印模式下展示字表网格，转换为标准字卡排版 */
+  #view-list {
+    display: block !important;
+  }
+
+  .character-list-grid {
+    display: grid !important;
+    grid-template-columns: repeat(3, 1fr) !important;
+    gap: 12px !important;
+    page-break-inside: avoid;
+  }
+
+  .char-tile {
+    border: 2px dashed #999999 !important;
+    border-radius: 12px !important;
+    padding: 24px 12px !important;
+    box-shadow: none !important;
+    background: #FFFFFF !important;
+    break-inside: avoid;
+    height: 180px;
+    justify-content: space-around;
+  }
+
+  .tile-pinyin {
+    font-size: 20px !important;
+    color: #444444 !important;
+    font-weight: 700 !important;
+  }
+
+  .tile-char {
+    font-size: 72px !important;
+    color: #000000 !important;
+    font-family: "KaiTi", "STKaiti", serif !important;
+  }
+
+  .tile-status-icon {
+    display: none !important;
+  }
+}
