@@ -73,9 +73,9 @@
           </div>
 
           <div class="character-box-wrap">
-            <div class="pinyin-display" id="cardFrontPinyin">rén</div>
-            <div class="tianzige-bg grid-mizige" id="cardFrontTianzige">
-              <span class="char-main" id="cardFrontChar">人</span>
+            <div class="pinyin-display no-flip" id="cardFrontPinyin" title="点击听发音">rén</div>
+            <div class="tianzige-bg grid-mizige no-flip" id="cardFrontTianzige">
+              <span class="char-main no-flip" id="cardFrontChar" title="点击听发音">人</span>
             </div>
           </div>
 
@@ -270,6 +270,21 @@
           <option value="tianzige">田字格</option>
           <option value="none">纯净无格</option>
         </select>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">中文朗读语音 (TTS Voice)</label>
+        <div style="display: flex; gap: 8px;">
+          <select id="settingVoiceSelect" class="form-select" style="flex: 1;">
+            <option value="">自动优选最佳普通话 (推荐)</option>
+          </select>
+          <button type="button" class="btn btn-secondary" id="btnTestVoice" style="white-space: nowrap; padding: 6px 14px; font-size: 13px; font-weight: 700;">
+            🔊 试听
+          </button>
+        </div>
+        <p style="font-size: 11px; color: #7F8C8D; margin-top: 4px;">
+          若设备默认使用了英文发音，请在此选择中文普通话语音（如 Tingting 婷婷）
+        </p>
       </div>
 
       <div class="form-group">

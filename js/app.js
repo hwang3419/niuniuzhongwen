@@ -160,6 +160,24 @@ class AppController {
       };
     }
 
+    // 点击大字或拼音也直接朗读该字
+    const frontPinyin = document.getElementById('cardFrontPinyin');
+    const frontChar = document.getElementById('cardFrontChar');
+    if (frontPinyin) {
+      frontPinyin.onclick = (e) => {
+        e.stopPropagation();
+        const cur = this.getCurrentCharacter();
+        if (cur) window.soundEngine.speak(cur.char);
+      };
+    }
+    if (frontChar) {
+      frontChar.onclick = (e) => {
+        e.stopPropagation();
+        const cur = this.getCurrentCharacter();
+        if (cur) window.soundEngine.speak(cur.char);
+      };
+    }
+
     // 收藏当前字
     const favBtn = document.getElementById('favCharBtn');
     if (favBtn) {
@@ -709,11 +727,13 @@ class AppController {
         const gridType = document.getElementById('settingGridType').value;
         const eyeCare = document.getElementById('settingEyeCare').checked;
         const interval = parseFloat(document.getElementById('settingAutoPlaySpeed').value) || 3.5;
+        const voiceName = document.getElementById('settingVoiceSelect') ? document.getElementById('settingVoiceSelect').value : '';
 
         window.storageManager.saveSetting('showPinyinOnFront', showPinyin);
         window.storageManager.saveSetting('gridType', gridType);
         window.storageManager.saveSetting('eyeCareMode', eyeCare);
         window.storageManager.saveSetting('autoPlayInterval', interval);
+        window.storageManager.saveSetting('preferredVoiceName', voiceName);
 
         this.applySettings();
         this.renderCard();
@@ -803,11 +823,39 @@ class AppController {
     const gridTypeEl = document.getElementById('settingGridType');
     const eyeCareEl = document.getElementById('settingEyeCare');
     const speedEl = document.getElementById('settingAutoPlaySpeed');
+    const voiceSelect = document.getElementById('settingVoiceSelect');
+    const testVoiceBtn = document.getElementById('btnTestVoice');
 
     if (showPinyinEl) showPinyinEl.checked = s.showPinyinOnFront;
     if (gridTypeEl) gridTypeEl.value = s.gridType;
     if (eyeCareEl) eyeCareEl.checked = s.eyeCareMode;
     if (speedEl) speedEl.value = s.autoPlayInterval || 3.5;
+
+    // 填充中文语音选项
+    if (voiceSelect) {
+      const chineseVoices = window.soundEngine.getAvailableChineseVoices();
+      if (chineseVoices.length > 0) {
+        voiceSelect.innerHTML = `
+          <option value="">自动优选标准普通话 (${chineseVoices[0].name})</option>
+          ${chineseVoices.map(v => `
+            <option value="${v.name}" ${v.name === s.preferredVoiceName ? 'selected' : ''}>
+              ${v.name} [${v.lang}]
+            </option>
+          `).join('')}
+        `;
+      } else {
+        voiceSelect.innerHTML = `
+          <option value="">未加载到专属中文语音 (使用系统默认)</option>
+        `;
+      }
+    }
+
+    if (testVoiceBtn) {
+      testVoiceBtn.onclick = () => {
+        const chosenVoice = voiceSelect ? voiceSelect.value : null;
+        window.soundEngine.testVoice(chosenVoice);
+      };
+    }
   }
 }
 

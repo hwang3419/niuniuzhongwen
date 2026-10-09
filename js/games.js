@@ -139,7 +139,8 @@ class GameEngine {
       });
 
       setTimeout(() => {
-        window.soundEngine.speak(`这是“${target.char}”，${target.pinyin}`);
+        const hintWord = target.words && target.words.length > 0 ? target.words[0] : target.char;
+        window.soundEngine.speak(`这是“${target.char}”。${hintWord}的“${target.char}”。`);
       }, 400);
 
       setTimeout(() => {

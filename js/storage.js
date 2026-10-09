@@ -18,7 +18,8 @@ const DEFAULT_SETTINGS = {
   autoPlayInterval: 3.5,       // 自动巡航轮播间隔 (秒)
   speechRate: 0.85,            // 朗读语速
   soundEffects: true,          // 音效开关
-  eyeCareMode: false           // 柔和护眼模式
+  eyeCareMode: false,          // 柔和护眼模式
+  preferredVoiceName: ''       // 用户选定的中文普通话语音
 };
 
 class StorageManager {

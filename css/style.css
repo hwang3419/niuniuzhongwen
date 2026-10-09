@@ -370,6 +370,12 @@ html, body {
   color: var(--text-pinyin);
   margin-bottom: 6px;
   letter-spacing: 1px;
+  cursor: pointer;
+  transition: transform 0.15s;
+}
+
+.pinyin-display:active {
+  transform: scale(0.95);
 }
 
 /* 田字格与米字格样式 */
@@ -433,6 +439,12 @@ html, body {
   position: relative;
   z-index: 2;
   margin-top: 2px;
+  cursor: pointer;
+  transition: transform 0.15s;
+}
+
+.char-main:active {
+  transform: scale(0.96);
 }
 
 /* 正面底部提示 */
