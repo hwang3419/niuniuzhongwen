@@ -1,4 +1,4 @@
-const CACHE_NAME = 'mlp-chinese-flashcards-v1';
+const CACHE_NAME = 'mlp-chinese-flashcards-v2-official-g1-302';
 const ASSETS_TO_CACHE = [
   './',
   './index.html',

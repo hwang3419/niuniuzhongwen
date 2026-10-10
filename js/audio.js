@@ -230,6 +230,18 @@ class SoundEngine {
     this.speak(textToRead);
   }
 
+  // 停止当前所有语音播放
+  stop() {
+    if (this.speechSynthesis) {
+      try {
+        this.speechSynthesis.cancel();
+      } catch (e) {
+        console.warn('SpeechSynthesis cancel error:', e);
+      }
+      this._currentUtterance = null;
+    }
+  }
+
   // 试听测试语音
   testVoice(voiceName = null) {
     const testText = '你好！我是你的中文识字小助手，我们一起快乐学汉字吧！';

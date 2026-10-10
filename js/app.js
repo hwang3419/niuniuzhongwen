@@ -378,7 +378,7 @@ class AppController {
     this.updateCardStatusBadge();
   }
 
-  // 翻转卡片
+  // 翻转卡片 (仅做翻转，不自动发音，需手动点击朗读按钮)
   flipCard() {
     const flashcard = document.getElementById('flashcard');
     if (!flashcard) return;
@@ -387,43 +387,27 @@ class AppController {
     flashcard.classList.toggle('is-flipped', this.isCardFlipped);
     window.soundEngine.playFlip();
 
-    // 翻转到背面时，自动朗读例句或词语
     if (this.isCardFlipped) {
       window.storageManager.incrementFlipCount();
-      const cur = this.getCurrentCharacter();
-      if (cur) {
-        setTimeout(() => {
-          window.soundEngine.speakCard(cur);
-        }, 200);
-      }
     }
   }
 
-  // 下一张卡片
+  // 下一张卡片 (切换时不自动发声，停止上一张未播完的语音)
   nextCard() {
     if (this.cardList.length === 0) return;
+    window.soundEngine.stop();
     window.soundEngine.playPop();
     this.currentIndex = (this.currentIndex + 1) % this.cardList.length;
     this.renderCard();
-
-    // 自动朗读正面新字
-    const cur = this.getCurrentCharacter();
-    if (cur) {
-      setTimeout(() => window.soundEngine.speak(cur.char), 250);
-    }
   }
 
-  // 上一张卡片
+  // 上一张卡片 (切换时不自动发声，停止上一张未播完的语音)
   prevCard() {
     if (this.cardList.length === 0) return;
+    window.soundEngine.stop();
     window.soundEngine.playPop();
     this.currentIndex = (this.currentIndex - 1 + this.cardList.length) % this.cardList.length;
     this.renderCard();
-
-    const cur = this.getCurrentCharacter();
-    if (cur) {
-      setTimeout(() => window.soundEngine.speak(cur.char), 250);
-    }
   }
 
   // 状态徽章更新
@@ -654,7 +638,6 @@ class AppController {
         if (foundIdx !== -1) {
           this.currentIndex = foundIdx;
           this.switchTab('card');
-          window.soundEngine.speak(char);
         }
       };
     });
